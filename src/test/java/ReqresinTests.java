@@ -1,26 +1,37 @@
+import lombok.UserData;
 import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.is;
+import java.util.List;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// В первые 2 теста добавлен принцип POJO объектов
+// Также в тесты добавлены спецификации
 public class ReqresinTests {
 
     @Test
-    void checkUsersTotal() {
-        get("https://reqres.in/api/users?page=2")
+    void checkUsersEmail() {
+        List<UserData> users = given()
+                .spec(Specs.request)
+                .get("/users?page=2")
                 .then()
-                .statusCode(200)
-                .body("total", is(12));
+                .spec(Specs.response)
+                .body("total", is(12))
+                .extract().jsonPath().getList("data", UserData.class);
+        assertEquals("byron.fields@reqres.in", users.get(3).getEmail());
     }
 
     @Test
     void checkSingleResource() {
-        get("https://reqres.in/api/unknown/2")
+        UserData data = given()
+                .spec(Specs.request)
+                .get("/unknown/2")
                 .then()
-                .statusCode(200)
-                .body("data.name", is("fuchsia rose"));
+                .spec(Specs.response)
+                .extract().jsonPath().getObject("data", UserData.class);
+        assertEquals("fuchsia rose", data.getName());
     }
 
     @Test
@@ -28,12 +39,10 @@ public class ReqresinTests {
         String body = "{ \"name\": \"morpheus\", \"job\": \"leader\", \"id\": \"598\", \"createdAt\": \"2022-06-07T11:53:47.580Z\" }";
 
         given()
-                .log().uri()
-                .log().body()
+                .spec(Specs.request)
                 .body(body)
-                .contentType(JSON)
                 .when()
-                .post("https://reqres.in/api/users")
+                .post("/users")
                 .then()
                 .statusCode(201)
                 .log().status()
@@ -44,10 +53,9 @@ public class ReqresinTests {
     @Test
     void deleteUserStatusCode204() {
         given()
-                .log().uri()
-                .log().body()
+                .spec(Specs.request)
                 .when()
-                .delete("https://reqres.in/api/users/2")
+                .delete("/users/2")
                 .then()
                 .statusCode(204);
     }
@@ -56,12 +64,10 @@ public class ReqresinTests {
     void checkUnsuccessfulLogin() {
         String body = "{ \"email\": \"peter@klaven\" }";
         given()
-                .log().uri()
-                .log().body()
+                .spec(Specs.request)
                 .body(body)
-                .contentType(JSON)
                 .when()
-                .post("https://reqres.in/api/login")
+                .post("/login")
                 .then()
                 .log().status()
                 .log().body()
