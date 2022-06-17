@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ReqresinTests {
 
     @Test
-    void checkUsersEmail() {
+    void checkUsersEmail()  {
         List<UserData> users = given()
                 .spec(Specs.request)
                 .get("/users?page=2")
@@ -22,7 +23,8 @@ public class ReqresinTests {
 
                 .extract().jsonPath().getList("data", UserData.class);
 
-        assertEquals("byron.fields@reqres.in", users.get(3).toString());
+
+        assertEquals("byron.fields@reqres.in", users.get(3).getEmail());
     }
 
    /* @Test
