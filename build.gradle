@@ -1,7 +1,6 @@
 plugins {
     id 'java-library'
     id 'io.qameta.allure' version '2.9.6'
-    //Ломбок тут подключила только
     id "io.freefair.lombok" version "6.0.0-m2"
 
 }
@@ -49,11 +48,9 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jVersion",
             "org.assertj:assertj-core:$assertjVersion",
             "org.aeonbits.owner:owner:$ownerVersion",
-            "org.projectlombok:lombok:1.18.22",
             "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
             "com.fasterxml.jackson.core:jackson-core:$jacksonVersion",
             "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
-
             "io.qameta.allure:allure-selenide:$allureVersion",
             "io.rest-assured:rest-assured:$restAssuredVersion",
             "io.qameta.allure:allure-rest-assured:$allureVersion",
